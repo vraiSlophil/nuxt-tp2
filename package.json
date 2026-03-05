@@ -1,0 +1,22 @@
+{
+  "name": "nuxt-tp2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.15.2",
+    "@tailwindcss/vite": "^4.2.1",
+    "daisyui": "^5.5.19",
+    "eslint": "^10.0.2",
+    "nuxt": "^4.3.1",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.9.3"
+  }
+}

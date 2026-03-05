@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: mytheme --default, light, dark;
+}
+
+@plugin "daisyui/theme" {
+  name: "mytheme";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-primary: #ebd88d;
+  --color-primary-content: #131107;
+  --color-secondary: #a8e3f1;
+  --color-secondary-content: #0a1214;
+  --color-accent: #ddbaee;
+  --color-accent-content: #110d14;
+  --color-neutral: #262931;
+  --color-neutral-content: #cfd0d2;
+  --color-base-100: #f1f0df;
+  --color-base-200: #d2d1c2;
+  --color-base-300: #b3b2a5;
+  --color-base-content: #141412;
+  --color-info: #2563eb;
+  --color-info-content: #d2e2ff;
+  --color-success: #16a34a;
+  --color-success-content: #000a02;
+  --color-warning: #d97706;
+  --color-warning-content: #110500;
+  --color-error: #dc2626;
+  --color-error-content: #ffd9d4;
+
+  --radius-selector: 2rem;
+  --radius-field: 2rem;
+  --radius-box: 2rem;
+  --size-selector: 0.3125rem;
+  --size-field: 0.3125rem;
+  --border: 2px;
+  /* --depth: 1; */
+  --noise: 1;
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  letter-spacing: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 700,
+    'GRAD' 200,
+    'opsz' 24;
+}
+
+html,
+body,
+#__nuxt {
+  min-height: 100%;
+}
