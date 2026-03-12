@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import type { Beer, BeerType } from '~~/utils/beers'
+import type { BeerType } from '~~/utils/beers'
 import {
   DEFAULT_PER_PAGE,
-  filterBeersByPrice,
   normalizeBeerType,
-  paginateBeers,
   parsePositiveInt,
   parsePriceMax,
-  toBeerEndpoint
+  parseSearchTerm
 } from '~~/utils/beers'
 
 const route = useRoute()
 const router = useRouter()
+const beersStore = useBeersStore()
 
-const allBeers = ref<Beer[]>([])
-const pending = ref(false)
-const errorMessage = ref('')
 const priceInput = ref('')
-
+const searchInput = ref('')
 const perPage = DEFAULT_PER_PAGE
 
 const beerType = computed<BeerType>(() => {
@@ -32,10 +28,22 @@ const priceMax = computed<number | null>(() => {
   return parsePriceMax(route.query.pricemax)
 })
 
+const search = computed<string>(() => {
+  return parseSearchTerm(route.query.search)
+})
+
 watch(
   priceMax,
   (value) => {
     priceInput.value = value === null ? '' : String(value)
+  },
+  { immediate: true }
+)
+
+watch(
+  search,
+  (value) => {
+    searchInput.value = value
   },
   { immediate: true }
 )
@@ -64,54 +72,53 @@ const replaceQuery = async (patch: Record<string, string | undefined>): Promise<
 }
 
 const fetchClientBeers = async (): Promise<void> => {
-  pending.value = true
-  errorMessage.value = ''
-
-  try {
-    const response = await $fetch<Beer[]>(toBeerEndpoint(beerType.value))
-    allBeers.value = Array.isArray(response) ? response : []
-  } catch {
-    allBeers.value = []
-    errorMessage.value = 'Impossible de charger les bieres cote client.'
-  } finally {
-    pending.value = false
-  }
+  await beersStore.ensureBeers(beerType.value)
 }
 
-watch(beerType, async () => {
+watch(
+  beerType,
+  async (nextType, previousType) => {
+    if (import.meta.client && nextType !== previousType) {
+      await fetchClientBeers()
+    }
+  }
+)
+
+onMounted(async () => {
   if (import.meta.client) {
     await fetchClientBeers()
   }
 })
 
-onMounted(() => {
-  fetchClientBeers()
-})
-
-const filteredBeers = computed(() => {
-  return filterBeersByPrice(allBeers.value, priceMax.value)
-})
-
 const pagination = computed(() => {
-  return paginateBeers(filteredBeers.value, page.value, perPage)
+  return beersStore.getPagination(beerType.value, {
+    priceMax: priceMax.value,
+    search: search.value,
+    page: page.value,
+    perPage
+  })
 })
 
 const applyFilters = async (): Promise<void> => {
   const parsedPrice = parsePriceMax(priceInput.value)
+  const parsedSearch = parseSearchTerm(searchInput.value)
 
   await replaceQuery({
     type: beerType.value,
     pricemax: parsedPrice === null ? undefined : String(parsedPrice),
+    search: parsedSearch.length === 0 ? undefined : parsedSearch,
     page: '1'
   })
 }
 
 const resetFilters = async (): Promise<void> => {
   priceInput.value = ''
+  searchInput.value = ''
 
   await replaceQuery({
     type: beerType.value,
     pricemax: undefined,
+    search: undefined,
     page: '1'
   })
 }
@@ -130,9 +137,20 @@ const goToPage = async (nextPage: number): Promise<void> => {
   await replaceQuery({
     type: beerType.value,
     pricemax: priceMax.value === null ? undefined : String(priceMax.value),
+    search: search.value.length === 0 ? undefined : search.value,
     page: String(nextPage)
   })
 }
+
+const pending = computed(() => {
+  return beersStore.getPending(beerType.value)
+})
+
+const errorMessage = computed(() => {
+  return beersStore.getError(beerType.value)
+})
+
+useErrorToast(errorMessage, { title: 'Chargement des bieres client' })
 </script>
 
 <template>
@@ -161,6 +179,9 @@ const goToPage = async (nextPage: number): Promise<void> => {
             <option value="ale">IPA / Ale</option>
             <option value="stouts">Stouts</option>
           </select>
+
+          <input v-model="searchInput" type="search" placeholder="Rechercher une biere"
+            class="input input-bordered input-sm">
 
           <input v-model="priceInput" type="text" inputmode="decimal" placeholder="Prix max ($)"
             class="input input-bordered input-sm">

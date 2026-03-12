@@ -1,6 +1,6 @@
 import type { Beer, BeerType } from '~~/utils/beers'
 
-const FAVORITES_KEY = 'tp2-beer-favorites'
+const FAVORITES_KEY = 'tp3-favorite-beers'
 
 export interface FavoriteBeer extends Beer {
   favoriteType: BeerType
@@ -62,9 +62,9 @@ const writeFavorites = (favorites: FavoriteBeer[]): void => {
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
 }
 
-export const useBeerFavorites = () => {
-  const favorites = useState<FavoriteBeer[]>('tp2-favorites', () => [])
-  const loaded = useState<boolean>('tp2-favorites-loaded', () => false)
+export const useFavoriteBeers = () => {
+  const favorites = useState<FavoriteBeer[]>('tp3-favorites', () => [])
+  const loaded = useState<boolean>('tp3-favorites-loaded', () => false)
 
   const ensureLoaded = (): void => {
     if (!isClient() || loaded.value) {
@@ -86,9 +86,9 @@ export const useBeerFavorites = () => {
   const toggleFavorite = (beer: Beer, type: BeerType): void => {
     ensureLoaded()
 
-    const key = toFavoriteKey(beer.id, type)
+    const favoriteKey = toFavoriteKey(beer.id, type)
     const index = favorites.value.findIndex((favorite) => {
-      return toFavoriteKey(favorite.id, favorite.favoriteType) === key
+      return toFavoriteKey(favorite.id, favorite.favoriteType) === favoriteKey
     })
 
     if (index >= 0) {
@@ -117,6 +117,7 @@ export const useBeerFavorites = () => {
 
   return {
     favorites,
+    loaded,
     ensureLoaded,
     isFavorite,
     toggleFavorite,

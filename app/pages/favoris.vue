@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { FavoriteBeer } from '~/composables/useBeerFavorites'
+import type { FavoriteBeer } from '~/composables/useFavoriteBeers'
 import { formatBeerPrice, getBeerImage } from '~~/utils/beers'
 
-const { favorites, ensureLoaded, removeFavorite } = useBeerFavorites()
+const { favorites, loaded, ensureLoaded, removeFavorite } = useFavoriteBeers()
 
 const getDetailsPath = (favorite: FavoriteBeer): string => {
   return `/bieres-client/${favorite.id}?type=${favorite.favoriteType}`
@@ -28,7 +28,11 @@ onMounted(() => {
       </ul>
     </div>
 
-    <div v-if="favorites.length === 0" class="alert">
+    <div v-if="!loaded" class="text-sm text-base-content/80">
+      Chargement...
+    </div>
+
+    <div v-else-if="favorites.length === 0" class="alert">
       <span>Aucune biere en favori pour le moment.</span>
     </div>
 

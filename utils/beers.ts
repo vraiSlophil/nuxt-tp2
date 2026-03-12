@@ -60,6 +60,16 @@ export const parsePriceMax = (value: unknown): number | null => {
   return parsed
 }
 
+export const parseSearchTerm = (value: unknown): string => {
+  const firstValue = Array.isArray(value) ? value[0] : value
+
+  if (typeof firstValue !== 'string') {
+    return ''
+  }
+
+  return firstValue.trim()
+}
+
 export const parseBeerPrice = (value: unknown): number | null => {
   if (typeof value !== 'string') {
     return null
@@ -93,6 +103,18 @@ export const filterBeersByPrice = (beers: Beer[], priceMax: number | null): Beer
     }
 
     return parsedPrice <= priceMax
+  })
+}
+
+export const filterBeersByName = (beers: Beer[], searchTerm: string): Beer[] => {
+  const normalizedSearchTerm = searchTerm.trim().toLocaleLowerCase()
+
+  if (normalizedSearchTerm.length === 0) {
+    return beers
+  }
+
+  return beers.filter((beer) => {
+    return beer.name.toLocaleLowerCase().includes(normalizedSearchTerm)
   })
 }
 

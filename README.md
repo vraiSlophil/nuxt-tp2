@@ -1,4 +1,4 @@
-# TD2 - bieres
+# TD3 - bieres
 
 Nathan OUDER
 
@@ -10,10 +10,10 @@ npm run dev
 
 ## Pages
 
-- `/` : accueil TD2
+- `/` : accueil TD3
 - `/bieres` : preview par type
-- `/bieres-client` : liste chargee cote client
+- `/bieres-client` : liste chargee cote client avec store Pinia
 - `/bieres-client/:id` : detail client
-- `/bieres-serveur` : liste chargee cote serveur
+- `/bieres-serveur` : liste chargee cote serveur via la route API Nuxt
 - `/bieres-serveur/:id` : detail serveur
-- `/favoris` : favoris locaux
+- `/favoris` : favoris stockes en localStorage

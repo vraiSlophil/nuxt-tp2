@@ -4,7 +4,8 @@ import {
   DEFAULT_PER_PAGE,
   normalizeBeerType,
   parsePositiveInt,
-  parsePriceMax
+  parsePriceMax,
+  parseSearchTerm
 } from '~~/utils/beers'
 
 interface BeerApiResponse {
@@ -15,6 +16,7 @@ interface BeerApiResponse {
   totalPages: number
   type: BeerType
   priceMax: number | null
+  search: string
 }
 
 const route = useRoute()
@@ -22,6 +24,7 @@ const router = useRouter()
 
 const perPage = DEFAULT_PER_PAGE
 const priceInput = ref('')
+const searchInput = ref('')
 
 const beerType = computed<BeerType>(() => {
   return normalizeBeerType(route.query.type)
@@ -35,10 +38,22 @@ const priceMax = computed<number | null>(() => {
   return parsePriceMax(route.query.pricemax)
 })
 
+const search = computed<string>(() => {
+  return parseSearchTerm(route.query.search)
+})
+
 watch(
   priceMax,
   (value) => {
     priceInput.value = value === null ? '' : String(value)
+  },
+  { immediate: true }
+)
+
+watch(
+  search,
+  (value) => {
+    searchInput.value = value
   },
   { immediate: true }
 )
@@ -52,6 +67,10 @@ const serverQuery = computed<Record<string, string>>(() => {
 
   if (priceMax.value !== null) {
     query.pricemax = String(priceMax.value)
+  }
+
+  if (search.value.length > 0) {
+    query.search = search.value
   }
 
   return query
@@ -86,20 +105,24 @@ const replaceQuery = async (patch: Record<string, string | undefined>): Promise<
 
 const applyFilters = async (): Promise<void> => {
   const parsedPrice = parsePriceMax(priceInput.value)
+  const parsedSearch = parseSearchTerm(searchInput.value)
 
   await replaceQuery({
     type: beerType.value,
     pricemax: parsedPrice === null ? undefined : String(parsedPrice),
+    search: parsedSearch.length === 0 ? undefined : parsedSearch,
     page: '1'
   })
 }
 
 const resetFilters = async (): Promise<void> => {
   priceInput.value = ''
+  searchInput.value = ''
 
   await replaceQuery({
     type: beerType.value,
     pricemax: undefined,
+    search: undefined,
     page: '1'
   })
 }
@@ -118,14 +141,36 @@ const goToPage = async (nextPage: number): Promise<void> => {
   await replaceQuery({
     type: beerType.value,
     pricemax: priceMax.value === null ? undefined : String(priceMax.value),
+    search: search.value.length === 0 ? undefined : search.value,
     page: String(nextPage)
   })
 }
 
-const items = computed(() => data.value?.items ?? [])
-const total = computed(() => data.value?.total ?? 0)
-const totalPages = computed(() => data.value?.totalPages ?? 1)
-const serverPage = computed(() => data.value?.page ?? 1)
+const items = computed(() => {
+  return data.value?.items ?? []
+})
+
+const total = computed(() => {
+  return data.value?.total ?? 0
+})
+
+const totalPages = computed(() => {
+  return data.value?.totalPages ?? 1
+})
+
+const serverPage = computed(() => {
+  return data.value?.page ?? 1
+})
+
+const errorMessage = computed(() => {
+  if (error.value) {
+    return 'Impossible de charger les bieres cote serveur.'
+  }
+
+  return ''
+})
+
+useErrorToast(errorMessage, { title: 'Chargement des bieres serveur' })
 </script>
 
 <template>
@@ -142,7 +187,7 @@ const serverPage = computed(() => data.value?.page ?? 1)
     <div class="tabs tabs-box border-2 border-base-300 bg-base-100 p-1">
       <NuxtLink :to="`/bieres?type=${beerType}`" class="tab">Preview</NuxtLink>
       <NuxtLink :to="`/bieres-client?type=${beerType}`" class="tab">Client</NuxtLink>
-      <NuxtLink to="/bieres-serveur" class="tab tab-active">Serveur</NuxtLink>
+      <NuxtLink :to="`/bieres-serveur?type=${beerType}`" class="tab tab-active">Serveur</NuxtLink>
     </div>
 
     <div class="card border-2 border-base-300 bg-base-100">
@@ -154,6 +199,9 @@ const serverPage = computed(() => data.value?.page ?? 1)
             <option value="ale">IPA / Ale</option>
             <option value="stouts">Stouts</option>
           </select>
+
+          <input v-model="searchInput" type="search" placeholder="Rechercher une biere"
+            class="input input-bordered input-sm">
 
           <input v-model="priceInput" type="text" inputmode="decimal" placeholder="Prix max ($)"
             class="input input-bordered input-sm">
@@ -168,8 +216,8 @@ const serverPage = computed(() => data.value?.page ?? 1)
       </div>
     </div>
 
-    <div v-if="error" class="alert alert-error">
-      <span>Impossible de charger les bieres cote serveur.</span>
+    <div v-if="errorMessage" class="alert alert-error">
+      <span>{{ errorMessage }}</span>
     </div>
 
     <BeerGrid :beers="items" :type="beerType" details-base-path="/bieres-serveur" :loading="pending"

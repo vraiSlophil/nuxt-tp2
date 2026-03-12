@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<BeerGridProps>(), {
   emptyMessage: 'Aucune biere a afficher.'
 })
 
-const { ensureLoaded, isFavorite, toggleFavorite } = useBeerFavorites()
+const { ensureLoaded, isFavorite, toggleFavorite } = useFavoriteBeers()
 
 const detailsTo = (beerId: number): string => {
   return `${props.detailsBasePath}/${beerId}?type=${props.type}`
@@ -56,19 +56,8 @@ onMounted(() => {
 
 <template>
   <section class="space-y-4">
-    <div v-if="loading" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      <div v-for="placeholder in 6" :key="`placeholder-${placeholder}`"
-        class="card overflow-hidden border-2 border-base-300 bg-base-100">
-        <div class="h-52 w-full bg-base-200">
-          <div class="skeleton h-full w-full" />
-        </div>
-        <div class="card-body space-y-3 p-4">
-          <div class="skeleton h-5 w-3/4" />
-          <div class="skeleton h-4 w-1/2" />
-          <div class="skeleton h-4 w-2/3" />
-          <div class="skeleton h-9 w-full" />
-        </div>
-      </div>
+    <div v-if="loading" class="rounded-box border-2 border-base-300 bg-base-100 px-4 py-6 text-sm">
+      Chargement...
     </div>
 
     <div v-else-if="beers.length === 0" class="alert">

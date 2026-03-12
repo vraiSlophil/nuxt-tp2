@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import type { Beer, BeerType } from '~~/utils/beers'
-import { normalizeBeerType, toBeerEndpoint } from '~~/utils/beers'
+import type { BeerType } from '~~/utils/beers'
+import { normalizeBeerType } from '~~/utils/beers'
 
 const route = useRoute()
 const router = useRouter()
-
-const beers = ref<Beer[]>([])
-const isLoading = ref(false)
-const errorMessage = ref('')
+const beersStore = useBeersStore()
 
 const beerType = computed<BeerType>(() => {
   return normalizeBeerType(route.query.type)
@@ -28,29 +25,37 @@ const onTypeChange = async (event: Event): Promise<void> => {
 }
 
 const fetchPreviewBeers = async (): Promise<void> => {
-  isLoading.value = true
-  errorMessage.value = ''
-
-  try {
-    const response = await $fetch<Beer[]>(toBeerEndpoint(beerType.value))
-    beers.value = Array.isArray(response) ? response.slice(0, 6) : []
-  } catch {
-    beers.value = []
-    errorMessage.value = 'Impossible de charger les bieres pour ce type.'
-  } finally {
-    isLoading.value = false
-  }
+  await beersStore.ensureBeers(beerType.value)
 }
 
-watch(beerType, async () => {
+watch(
+  beerType,
+  async (nextType, previousType) => {
+    if (import.meta.client && nextType !== previousType) {
+      await fetchPreviewBeers()
+    }
+  }
+)
+
+onMounted(async () => {
   if (import.meta.client) {
     await fetchPreviewBeers()
   }
 })
 
-onMounted(() => {
-  fetchPreviewBeers()
+const beers = computed(() => {
+  return beersStore.getPreviewBeers(beerType.value)
 })
+
+const isLoading = computed(() => {
+  return beersStore.getPending(beerType.value)
+})
+
+const errorMessage = computed(() => {
+  return beersStore.getError(beerType.value)
+})
+
+useErrorToast(errorMessage, { title: 'Chargement des bieres' })
 </script>
 
 <template>

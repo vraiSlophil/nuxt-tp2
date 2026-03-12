@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { Beer, BeerType } from '~~/utils/beers'
-import { formatBeerPrice, getBeerImage, normalizeBeerType } from '~~/utils/beers'
+import { formatBeerPrice, getBeerImage, normalizeBeerType, toBeerId } from '~~/utils/beers'
 
 const route = useRoute()
-
-const { ensureLoaded, isFavorite, toggleFavorite } = useBeerFavorites()
+const { ensureLoaded, isFavorite, toggleFavorite } = useFavoriteBeers()
 
 const beerType = computed<BeerType>(() => {
   return normalizeBeerType(route.query.type)
+})
+
+const beerId = computed<number | null>(() => {
+  return toBeerId(route.params.id)
 })
 
 const endpoint = computed(() => {
@@ -25,6 +28,20 @@ const { data: beer, pending, error } = await useFetch<Beer>(endpoint, {
 onMounted(() => {
   ensureLoaded()
 })
+
+const errorMessage = computed(() => {
+  if (beerId.value === null) {
+    return 'ID invalide.'
+  }
+
+  if (error.value) {
+    return 'Biere introuvable ou erreur serveur.'
+  }
+
+  return ''
+})
+
+useErrorToast(errorMessage, { title: 'Detail biere serveur' })
 
 const isCurrentFavorite = computed(() => {
   if (!beer.value || typeof beer.value.id !== 'number') {
@@ -71,27 +88,27 @@ const formatRating = (value: unknown): string | null => {
       </div>
     </div>
 
-    <div v-if="pending" class="flex items-center gap-2">
-      <span class="loading loading-spinner loading-sm" />
-      <span>Chargement...</span>
+    <div v-if="pending" class="text-sm text-base-content/80">
+      Chargement...
     </div>
 
-    <div v-else-if="error" class="alert alert-error">
-      <span>Biere introuvable ou erreur serveur.</span>
+    <div v-else-if="errorMessage" class="alert alert-error">
+      <span>{{ errorMessage }}</span>
     </div>
 
-    <article v-else-if="beer" class="card overflow-hidden rounded-2xl border-2 border-base-300 bg-base-100">
+    <article v-else-if="beer" class="card overflow-hidden rounded-box border-2 border-base-300 bg-base-100">
       <figure class="relative h-72 w-full bg-base-200">
         <img v-if="getBeerImage(beer)" :src="getBeerImage(beer) ?? undefined" :alt="`Photo de ${beer.name}`"
-          class="h-full w-full object-contain">
+          class="h-full w-full object-contain p-4">
 
         <button type="button"
           class="btn btn-circle btn-sm absolute right-2 top-2 border-2 border-black bg-white text-black hover:bg-white"
-          :class="{ 'bg-red-500 text-white hover:bg-red-500': isCurrentFavorite }"
-          :aria-label="isCurrentFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+          :class="{
+            'text-red-500': isCurrentFavorite
+          }" :aria-label="isCurrentFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
           @click="toggleCurrentFavorite">
-          <span class="material-symbols-rounded text-[18px] ">
-            {{ isCurrentFavorite ? 'favorite' : 'favorite_border' }}
+          <span class="material-symbols-rounded text-[18px] pt-1">
+            favorite
           </span>
         </button>
       </figure>

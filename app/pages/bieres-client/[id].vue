@@ -1,20 +1,15 @@
 <script setup lang="ts">
-import type { Beer, BeerType } from '~~/utils/beers'
+import type { BeerType } from '~~/utils/beers'
 import {
   formatBeerPrice,
   getBeerImage,
   normalizeBeerType,
-  toBeerEndpoint,
   toBeerId
 } from '~~/utils/beers'
 
 const route = useRoute()
-
-const beer = ref<Beer | null>(null)
-const pending = ref(false)
-const errorMessage = ref('')
-
-const { ensureLoaded, isFavorite, toggleFavorite } = useBeerFavorites()
+const beersStore = useBeersStore()
+const { ensureLoaded, isFavorite, toggleFavorite } = useFavoriteBeers()
 
 const beerType = computed<BeerType>(() => {
   return normalizeBeerType(route.query.type)
@@ -26,45 +21,58 @@ const beerId = computed<number | null>(() => {
 
 const loadBeerClientSide = async (): Promise<void> => {
   if (beerId.value === null) {
-    beer.value = null
-    errorMessage.value = 'ID invalide.'
     return
   }
 
-  pending.value = true
-  errorMessage.value = ''
-
-  try {
-    const beers = await $fetch<Beer[]>(toBeerEndpoint(beerType.value))
-    const found = Array.isArray(beers)
-      ? beers.find((item) => {
-        return item.id === beerId.value
-      })
-      : null
-
-    beer.value = found ?? null
-
-    if (!beer.value) {
-      errorMessage.value = 'Biere introuvable.'
-    }
-  } catch {
-    beer.value = null
-    errorMessage.value = 'Erreur pendant le chargement client.'
-  } finally {
-    pending.value = false
-  }
+  await beersStore.ensureBeers(beerType.value)
 }
 
-watch([beerType, beerId], async () => {
+watch(
+  beerType,
+  async (nextType, previousType) => {
+    if (import.meta.client && nextType !== previousType) {
+      await loadBeerClientSide()
+    }
+  }
+)
+
+onMounted(async () => {
+  ensureLoaded()
+
   if (import.meta.client) {
     await loadBeerClientSide()
   }
 })
 
-onMounted(() => {
-  ensureLoaded()
-  loadBeerClientSide()
+const beer = computed(() => {
+  if (beerId.value === null) {
+    return null
+  }
+
+  return beersStore.getBeerById(beerType.value, beerId.value)
 })
+
+const pending = computed(() => {
+  return beersStore.getPending(beerType.value)
+})
+
+const errorMessage = computed(() => {
+  if (beerId.value === null) {
+    return 'ID invalide.'
+  }
+
+  if (beersStore.getError(beerType.value)) {
+    return 'Erreur pendant le chargement client.'
+  }
+
+  if (!pending.value && beersStore.hasLoaded(beerType.value) && !beer.value) {
+    return 'Biere introuvable.'
+  }
+
+  return ''
+})
+
+useErrorToast(errorMessage, { title: 'Detail biere client' })
 
 const isCurrentFavorite = computed(() => {
   if (!beer.value) {
@@ -111,27 +119,27 @@ const formatRating = (value: unknown): string | null => {
       </div>
     </div>
 
-    <div v-if="pending" class="flex items-center gap-2">
-      <span class="loading loading-spinner loading-sm" />
-      <span>Chargement...</span>
+    <div v-if="pending" class="text-sm text-base-content/80">
+      Chargement...
     </div>
 
     <div v-else-if="errorMessage" class="alert alert-error">
       <span>{{ errorMessage }}</span>
     </div>
 
-    <article v-else-if="beer" class="card overflow-hidden rounded-2xl border-2 border-base-300 bg-base-100">
+    <article v-else-if="beer" class="card overflow-hidden rounded-box border-2 border-base-300 bg-base-100">
       <figure class="relative h-72 w-full bg-base-200">
         <img v-if="getBeerImage(beer)" :src="getBeerImage(beer) ?? undefined" :alt="`Photo de ${beer.name}`"
-          class="h-full w-full object-contain">
+          class="h-full w-full object-contain p-4">
 
         <button type="button"
           class="btn btn-circle btn-sm absolute right-2 top-2 border-2 border-black bg-white text-black hover:bg-white"
-          :class="{ 'bg-red-500 text-white hover:bg-red-500': isCurrentFavorite }"
-          :aria-label="isCurrentFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+          :class="{
+            'text-red-500': isCurrentFavorite
+          }" :aria-label="isCurrentFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
           @click="toggleCurrentFavorite">
-          <span class="material-symbols-rounded text-[18px] ">
-            {{ isCurrentFavorite ? 'favorite' : 'favorite_border' }}
+          <span class="material-symbols-rounded text-[18px] pt-1">
+            favorite
           </span>
         </button>
       </figure>

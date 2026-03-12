@@ -2,11 +2,13 @@ import { createError, getQuery } from 'h3'
 import type { Beer, BeerType } from '~~/utils/beers'
 import {
   DEFAULT_PER_PAGE,
+  filterBeersByName,
   filterBeersByPrice,
   normalizeBeerType,
   paginateBeers,
   parsePositiveInt,
   parsePriceMax,
+  parseSearchTerm,
   toBeerEndpoint
 } from '~~/utils/beers'
 
@@ -34,14 +36,17 @@ export default defineEventHandler(async (event) => {
   const page = parsePositiveInt(query.page, 1)
   const perPage = parsePositiveInt(query.perPage, DEFAULT_PER_PAGE)
   const priceMax = parsePriceMax(query.pricemax)
+  const search = parseSearchTerm(query.search)
 
   const beers = await fetchBeersByType(type)
-  const filtered = filterBeersByPrice(beers, priceMax)
+  const filteredByName = filterBeersByName(beers, search)
+  const filtered = filterBeersByPrice(filteredByName, priceMax)
   const pagination = paginateBeers(filtered, page, perPage)
 
   return {
     ...pagination,
     type,
-    priceMax
+    priceMax,
+    search
   }
 })
