@@ -80,17 +80,18 @@ onMounted(() => {
         class="card overflow-hidden border-2 border-base-300 bg-base-100">
         <figure class="relative h-52 w-full bg-base-200">
           <img v-if="getBeerImage(beer)" :src="getBeerImage(beer) ?? undefined" :alt="`Photo de ${beer.name}`"
-            class="h-full w-full object-contain" loading="lazy">
+            class="h-full w-full p-4 object-contain" loading="lazy">
           <div v-else class="flex h-full w-full items-center justify-center text-sm">Image non disponible</div>
 
           <span class="badge badge-secondary absolute bottom-2 left-2">{{ type }}</span>
 
-          <button type="button" class="btn btn-circle btn-sm absolute right-2 top-2 text-black/50 hover:text-black"
+          <button type="button"
+            class="btn btn-circle btn-sm absolute right-2 top-2 flex justify-center align-center border-black/50 text-black/50 hover:text-black"
             :class="{
               'text-red-500': isBeerFavorite(beer.id)
             }" :aria-label="isBeerFavorite(beer.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'"
             @click="toggleBeerFavorite(beer)">
-            <span class="material-symbols-rounded text-[18px] leading-none">
+            <span class="material-symbols-rounded text-[18px] pt-1">
               favorite
             </span>
           </button>
@@ -106,7 +107,7 @@ onMounted(() => {
           </div>
 
           <NuxtLink :to="detailsTo(beer.id)" class="btn btn-outline btn-sm mt-2 w-full gap-1">
-            <span class="material-symbols-rounded text-[18px] leading-none">open_in_new</span>
+            <span class="material-symbols-rounded text-[18px] ">open_in_new</span>
             Voir details
           </NuxtLink>
         </div>

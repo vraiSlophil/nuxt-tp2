@@ -64,13 +64,13 @@ onMounted(() => {
       </ul>
     </div>
 
-    <div class="tabs tabs-box border border-base-300 bg-base-100 p-1">
+    <div class="tabs tabs-box border-2 border-base-300 bg-base-100 p-1">
       <NuxtLink to="/bieres" class="tab tab-active">Preview</NuxtLink>
       <NuxtLink :to="`/bieres-client?type=${beerType}`" class="tab">Version client</NuxtLink>
       <NuxtLink :to="`/bieres-serveur?type=${beerType}`" class="tab">Version serveur</NuxtLink>
     </div>
 
-    <div class="card border border-base-300 bg-base-100">
+    <div class="card border-2 border-base-300 bg-base-100">
       <div class="card-body space-y-4">
         <h1 class="card-title text-2xl">/bieres</h1>
         <p class="text-sm text-base-content/80">

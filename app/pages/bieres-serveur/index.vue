@@ -139,13 +139,13 @@ const serverPage = computed(() => data.value?.page ?? 1)
       </ul>
     </div>
 
-    <div class="tabs tabs-box border border-base-300 bg-base-100 p-1">
+    <div class="tabs tabs-box border-2 border-base-300 bg-base-100 p-1">
       <NuxtLink :to="`/bieres?type=${beerType}`" class="tab">Preview</NuxtLink>
       <NuxtLink :to="`/bieres-client?type=${beerType}`" class="tab">Client</NuxtLink>
       <NuxtLink to="/bieres-serveur" class="tab tab-active">Serveur</NuxtLink>
     </div>
 
-    <div class="card border border-base-300 bg-base-100">
+    <div class="card border-2 border-base-300 bg-base-100">
       <div class="card-body p-4">
         <h1 class="card-title text-2xl">/bieres-serveur</h1>
 

@@ -105,7 +105,7 @@ const formatRating = (value: unknown): string | null => {
       </ul>
     </div>
 
-    <div class="card border border-base-300 bg-base-100">
+    <div class="card border-2 border-base-300 bg-base-100">
       <div class="card-body space-y-3">
         <h1 class="card-title text-2xl">/bieres-client/{{ route.params.id }}</h1>
       </div>
@@ -130,7 +130,7 @@ const formatRating = (value: unknown): string | null => {
           :class="{ 'bg-red-500 text-white hover:bg-red-500': isCurrentFavorite }"
           :aria-label="isCurrentFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
           @click="toggleCurrentFavorite">
-          <span class="material-symbols-rounded text-[18px] leading-none">
+          <span class="material-symbols-rounded text-[18px] ">
             {{ isCurrentFavorite ? 'favorite' : 'favorite_border' }}
           </span>
         </button>
@@ -149,7 +149,7 @@ const formatRating = (value: unknown): string | null => {
         </div>
 
         <NuxtLink :to="`/bieres-client?type=${beerType}`" class="btn btn-outline gap-1">
-          <span class="material-symbols-rounded text-[18px] leading-none">arrow_back</span>
+          <span class="material-symbols-rounded text-[18px] ">arrow_back</span>
           Retour a la liste client
         </NuxtLink>
       </div>

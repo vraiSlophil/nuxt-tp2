@@ -34,13 +34,13 @@ onMounted(() => {
 
     <ul v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Liste des favoris">
       <li v-for="favorite in favorites" :key="`${favorite.favoriteType}-${favorite.id}`"
-        class="card border border-base-300 bg-base-100">
-        <figure class="indicator h-52 bg-base-200 p-4">
-          <span class="badge indicator-item badge-secondary">{{ favorite.favoriteType }}</span>
-
+        class="card overflow-hidden border-2 border-base-300 bg-base-100">
+        <figure class="relative h-52 w-full bg-base-200">
           <img v-if="getBeerImage(favorite)" :src="getBeerImage(favorite) ?? undefined"
             :alt="`Photo de ${favorite.name}`" class="h-full w-full object-contain" loading="lazy">
           <div v-else class="alert max-w-full text-sm">Image non disponible</div>
+
+          <span class="badge badge-secondary absolute bottom-2 left-2">{{ favorite.favoriteType }}</span>
         </figure>
 
         <div class="card-body p-4">

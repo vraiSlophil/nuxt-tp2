@@ -19,12 +19,12 @@ const links = [
         <header class="navbar border-b border-base-300 bg-base-100 px-4">
           <div class="flex-none lg:hidden">
             <label for="main-drawer" class="btn btn-square btn-ghost" aria-label="Ouvrir le menu">
-              <span class="material-symbols-rounded text-[20px] leading-none">menu</span>
+              <span class="material-symbols-rounded text-[20px] ">menu</span>
             </label>
           </div>
 
           <div class="flex-1">
-            <NuxtLink to="/" class="text-xl font-bold">TD2 Bieres</NuxtLink>
+            <NuxtLink to="/" class="text-xl pl-4 font-bold">TD2 Bieres</NuxtLink>
           </div>
         </header>
 
@@ -39,11 +39,12 @@ const links = [
         <aside class="min-h-full w-72 border-r border-base-300 bg-base-100 p-4">
           <h2 class="mb-3 text-lg font-semibold">Pages TD2</h2>
 
-          <ul class="menu gap-1 rounded-box bg-base-100 p-0">
+          <ul class="menu w-full gap-1 bg-base-100 p-0">
             <li v-for="link in links" :key="link.to">
-              <NuxtLink :to="link.to" active-class="menu-active" exact-active-class="menu-active">
-                <span class="material-symbols-rounded text-[18px] leading-none">{{ link.icon }}</span>
-                {{ link.label }}
+              <NuxtLink :to="link.to" active-class="menu-active" exact-active-class="menu-active"
+                class="btn btn-ghost flex-row items-center">
+                <span class="material-symbols-rounded text-[18px] basis-1/4">{{ link.icon }}</span>
+                <span class="basis-3/4">{{ link.label }}</span>
               </NuxtLink>
             </li>
           </ul>

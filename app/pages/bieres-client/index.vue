@@ -146,13 +146,13 @@ const goToPage = async (nextPage: number): Promise<void> => {
       </ul>
     </div>
 
-    <div class="tabs tabs-box border border-base-300 bg-base-100 p-1">
+    <div class="tabs tabs-box border-2 border-base-300 bg-base-100 p-1">
       <NuxtLink :to="`/bieres?type=${beerType}`" class="tab">Preview</NuxtLink>
       <NuxtLink to="/bieres-client" class="tab tab-active">Client</NuxtLink>
       <NuxtLink :to="`/bieres-serveur?type=${beerType}`" class="tab">Serveur</NuxtLink>
     </div>
 
-    <div class="card border border-base-300 bg-base-100">
+    <div class="card border-2 border-base-300 bg-base-100">
       <div class="card-body p-4">
         <h1 class="card-title text-2xl">/bieres-client</h1>
 
