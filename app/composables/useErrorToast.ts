@@ -6,7 +6,7 @@ interface ErrorToastOptions {
 }
 
 export const useErrorToast = (errorMessage: Ref<string>, options: ErrorToastOptions = {}): void => {
-  const toast = useToast()
+  const toastStore = useToastStore()
   let lastMessage = ''
 
   onMounted(() => {
@@ -25,7 +25,7 @@ export const useErrorToast = (errorMessage: Ref<string>, options: ErrorToastOpti
         }
 
         lastMessage = normalizedMessage
-        toast.error(normalizedMessage, { title: options.title })
+        toastStore.error(normalizedMessage, { title: options.title })
       },
       { immediate: true }
     )

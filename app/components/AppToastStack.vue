@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { ToastItem, ToastTone } from '~/composables/useToast'
+import type { ToastItem, ToastTone } from '~/stores/toast'
 
-const { toasts, dismissToast } = useToast()
+const toastStore = useToastStore()
+const { dismissToast } = toastStore
+const { toasts } = storeToRefs(toastStore)
 
 const toneClasses: Record<ToastTone, string> = {
   error: 'border-error/70',

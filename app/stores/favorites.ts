@@ -15,7 +15,7 @@ const toFavoritePayload = (id: number, type: BeerType): FavoriteBeerPayload => {
 }
 
 export const useFavoritesStore = defineStore('favorites', () => {
-  const toast = useToast()
+  const toastStore = useToastStore()
   const favorites = ref<FavoriteBeer[]>([])
   const loaded = ref(false)
   const pending = ref(false)
@@ -25,7 +25,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
     errorMessage.value = message
 
     if (import.meta.client) {
-      toast.error(message, { title: 'Favoris' })
+      toastStore.error(message, { title: 'Favoris' })
     }
   }
 

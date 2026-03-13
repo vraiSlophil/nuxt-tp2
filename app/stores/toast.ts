@@ -1,4 +1,5 @@
-import { useState } from '#imports'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 export type ToastTone = 'error' | 'success' | 'info' | 'warning'
 
@@ -18,7 +19,7 @@ export interface ToastItem {
 }
 
 const DEFAULT_DURATION = 4500
-const toastTimers = new Map<string, ReturnType<typeof setTimeout>>()
+const toastTimers = new Map<string, number>()
 
 const createToastId = (): string => {
   return `${Date.now()}-${Math.round(Math.random() * 1e9)}`
@@ -31,12 +32,12 @@ const clearToastTimer = (id: string): void => {
     return
   }
 
-  clearTimeout(timer)
+  window.clearTimeout(timer)
   toastTimers.delete(id)
 }
 
-export const useToast = () => {
-  const toasts = useState<ToastItem[]>('app-toasts', () => [])
+export const useToastStore = defineStore('toast', () => {
+  const toasts = ref<ToastItem[]>([])
 
   const dismissToast = (id: string): void => {
     toasts.value = toasts.value.filter((toast) => {
@@ -145,4 +146,4 @@ export const useToast = () => {
     info,
     warning
   }
-}
+})
