@@ -1,17 +1,10 @@
 import { createError, getQuery, getRouterParam } from 'h3'
 import type { Beer, BeerType } from '~~/utils/beers'
-import { normalizeBeerType, toBeerEndpoint, toBeerId } from '~~/utils/beers'
+import { normalizeBeerType, toBeerId } from '~~/utils/beers'
+import { fetchRemoteBeerById } from '#server/utils/remote-beers'
 
 const fetchBeerById = async (id: number, type: BeerType): Promise<Beer | null> => {
-  const beers = await $fetch<Beer[]>(toBeerEndpoint(type))
-
-  if (!Array.isArray(beers)) {
-    return null
-  }
-
-  return beers.find((beer) => {
-    return beer.id === id
-  }) ?? null
+  return fetchRemoteBeerById(type, id)
 }
 
 export default defineEventHandler(async (event) => {

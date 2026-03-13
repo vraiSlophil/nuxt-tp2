@@ -9,7 +9,8 @@ import {
 
 const route = useRoute()
 const beersStore = useBeersStore()
-const { ensureLoaded, isFavorite, toggleFavorite } = useFavoriteBeers()
+const favoritesStore = useFavoritesStore()
+const { ensureLoaded, isFavorite, toggleFavorite } = favoritesStore
 
 const beerType = computed<BeerType>(() => {
   return normalizeBeerType(route.query.type)
@@ -37,7 +38,7 @@ watch(
 )
 
 onMounted(async () => {
-  ensureLoaded()
+  await ensureLoaded()
 
   if (import.meta.client) {
     await loadBeerClientSide()
@@ -82,12 +83,12 @@ const isCurrentFavorite = computed(() => {
   return isFavorite(beer.value.id, beerType.value)
 })
 
-const toggleCurrentFavorite = (): void => {
+const toggleCurrentFavorite = async (): Promise<void> => {
   if (!beer.value) {
     return
   }
 
-  toggleFavorite(beer.value, beerType.value)
+  await toggleFavorite(beer.value, beerType.value)
 }
 
 const formatRating = (value: unknown): string | null => {

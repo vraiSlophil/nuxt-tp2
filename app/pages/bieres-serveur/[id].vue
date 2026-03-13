@@ -3,7 +3,8 @@ import type { Beer, BeerType } from '~~/utils/beers'
 import { formatBeerPrice, getBeerImage, normalizeBeerType, toBeerId } from '~~/utils/beers'
 
 const route = useRoute()
-const { ensureLoaded, isFavorite, toggleFavorite } = useFavoriteBeers()
+const favoritesStore = useFavoritesStore()
+const { ensureLoaded, isFavorite, toggleFavorite } = favoritesStore
 
 const beerType = computed<BeerType>(() => {
   return normalizeBeerType(route.query.type)
@@ -25,8 +26,8 @@ const { data: beer, pending, error } = await useFetch<Beer>(endpoint, {
   query: beerQuery
 })
 
-onMounted(() => {
-  ensureLoaded()
+onMounted(async () => {
+  await ensureLoaded()
 })
 
 const errorMessage = computed(() => {
@@ -51,12 +52,12 @@ const isCurrentFavorite = computed(() => {
   return isFavorite(beer.value.id, beerType.value)
 })
 
-const toggleCurrentFavorite = (): void => {
+const toggleCurrentFavorite = async (): Promise<void> => {
   if (!beer.value) {
     return
   }
 
-  toggleFavorite(beer.value, beerType.value)
+  await toggleFavorite(beer.value, beerType.value)
 }
 
 const formatRating = (value: unknown): string | null => {

@@ -8,13 +8,13 @@ import {
   paginateBeers,
   parsePositiveInt,
   parsePriceMax,
-  parseSearchTerm,
-  toBeerEndpoint
+  parseSearchTerm
 } from '~~/utils/beers'
+import { fetchRemoteBeersByType } from '#server/utils/remote-beers'
 
 const fetchBeersByType = async (type: BeerType): Promise<Beer[]> => {
   try {
-    const beers = await $fetch<Beer[]>(toBeerEndpoint(type))
+    const beers = await fetchRemoteBeersByType(type)
 
     if (!Array.isArray(beers)) {
       return []

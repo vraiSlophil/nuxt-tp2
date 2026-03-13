@@ -24,7 +24,7 @@ const links = [
           </div>
 
           <div class="flex-1">
-            <NuxtLink to="/" class="text-xl pl-4 font-bold">TD3 Bieres</NuxtLink>
+            <NuxtLink to="/" class="text-xl pl-4 font-bold">TD4 Bieres</NuxtLink>
           </div>
         </header>
 
@@ -37,7 +37,7 @@ const links = [
         <label for="main-drawer" class="drawer-overlay" aria-label="Fermer le menu" />
 
         <aside class="min-h-full w-72 border-r border-base-300 bg-base-100 p-4">
-          <h2 class="mb-3 text-lg font-semibold">Pages TD3</h2>
+          <h2 class="mb-3 text-lg font-semibold">Pages TD4</h2>
 
           <ul class="menu w-full gap-1 bg-base-100 p-0">
             <li v-for="link in links" :key="link.to">

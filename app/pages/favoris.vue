@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import type { FavoriteBeer } from '~/composables/useFavoriteBeers'
+import type { FavoriteBeer } from '~~/utils/favorites'
 import { formatBeerPrice, getBeerImage } from '~~/utils/beers'
 
-const { favorites, loaded, ensureLoaded, removeFavorite } = useFavoriteBeers()
+const favoritesStore = useFavoritesStore()
+const { ensureLoaded, removeFavorite } = favoritesStore
+const { errorMessage, favorites, loaded, pending } = storeToRefs(favoritesStore)
 
 const getDetailsPath = (favorite: FavoriteBeer): string => {
   return `/bieres-client/${favorite.id}?type=${favorite.favoriteType}`
 }
 
-const remove = (favorite: FavoriteBeer): void => {
-  removeFavorite(favorite.id, favorite.favoriteType)
+const formatFavoritedAt = (value: string): string => {
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return 'Date inconnue'
+  }
+
+  return new Intl.DateTimeFormat('fr-FR', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  }).format(date)
 }
 
-onMounted(() => {
-  ensureLoaded()
+const remove = async (favorite: FavoriteBeer): Promise<void> => {
+  await removeFavorite(favorite.id, favorite.favoriteType)
+}
+
+onMounted(async () => {
+  await ensureLoaded()
 })
 </script>
 
@@ -28,8 +43,12 @@ onMounted(() => {
       </ul>
     </div>
 
-    <div v-if="!loaded" class="text-sm text-base-content/80">
+    <div v-if="pending && !loaded" class="text-sm text-base-content/80">
       Chargement...
+    </div>
+
+    <div v-else-if="errorMessage" class="alert alert-error">
+      <span>{{ errorMessage }}</span>
     </div>
 
     <div v-else-if="favorites.length === 0" class="alert">
@@ -52,6 +71,7 @@ onMounted(() => {
 
           <div class="flex flex-wrap gap-2 text-sm">
             <span class="badge badge-outline">{{ formatBeerPrice(favorite.price) }}</span>
+            <span class="badge badge-accent badge-outline">{{ formatFavoritedAt(favorite.favoritedAt) }}</span>
           </div>
 
           <div class="join w-full">

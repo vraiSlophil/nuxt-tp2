@@ -15,7 +15,8 @@ const props = withDefaults(defineProps<BeerGridProps>(), {
   emptyMessage: 'Aucune biere a afficher.'
 })
 
-const { ensureLoaded, isFavorite, toggleFavorite } = useFavoriteBeers()
+const favoritesStore = useFavoritesStore()
+const { ensureLoaded, isFavorite, toggleFavorite } = favoritesStore
 
 const detailsTo = (beerId: number): string => {
   return `${props.detailsBasePath}/${beerId}?type=${props.type}`
@@ -25,8 +26,8 @@ const isBeerFavorite = (beerId: number): boolean => {
   return isFavorite(beerId, props.type)
 }
 
-const toggleBeerFavorite = (beer: Beer): void => {
-  toggleFavorite(beer, props.type)
+const toggleBeerFavorite = async (beer: Beer): Promise<void> => {
+  await toggleFavorite(beer, props.type)
 }
 
 const averageRating = (beer: Beer): number | null => {
@@ -49,8 +50,8 @@ const formatRating = (beer: Beer): string | null => {
   return value.toFixed(2)
 }
 
-onMounted(() => {
-  ensureLoaded()
+onMounted(async () => {
+  await ensureLoaded()
 })
 </script>
 
