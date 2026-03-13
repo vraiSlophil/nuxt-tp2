@@ -8,6 +8,8 @@ Nathan OUDER
 npm run dev
 ```
 
+phpMyAdmin est aussi disponible via Docker sur `http://localhost:8080` avec le theme `BooDark`.
+
 ## Pages
 
 - `/` : accueil TD3

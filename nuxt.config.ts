@@ -1,6 +1,8 @@
 import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const devServerPort = Number.parseInt(process.env.NUXT_PORT ?? '3000', 10)
+
 export default defineNuxtConfig({
   modules: ['@nuxt/eslint', '@pinia/nuxt'],
   app: {
@@ -25,6 +27,10 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
+  devServer: {
+    host: '0.0.0.0',
+    port: Number.isNaN(devServerPort) ? 3000 : devServerPort
+  },
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [tailwindcss()]
