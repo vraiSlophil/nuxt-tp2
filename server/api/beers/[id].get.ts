@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const beerId = toBeerId(idParam)
 
   if (beerId === null) {
-    throw createError({ statusCode: 400, statusMessage: 'ID de biere invalide' })
+    throw createError({ statusCode: 400, statusMessage: 'ID de bière invalide' })
   }
 
   const query = getQuery(event)
@@ -25,13 +25,13 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     throw createError({
       statusCode: 502,
-      statusMessage: 'Impossible de recuperer la biere distante',
+      statusMessage: 'Impossible de récupérer la bière distante',
       data: error
     })
   }
 
   if (!beer) {
-    throw createError({ statusCode: 404, statusMessage: 'Biere introuvable' })
+    throw createError({ statusCode: 404, statusMessage: 'Bière introuvable' })
   }
 
   return {

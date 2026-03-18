@@ -4,13 +4,22 @@ import tailwindcss from '@tailwindcss/vite'
 const devServerPort = Number.parseInt(process.env.NUXT_PORT ?? '3000', 10)
 
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@pinia/nuxt', 'nuxt-server-utils'],
+  modules: ['@nuxt/eslint', '@pinia/nuxt', 'nuxt-server-utils', '@sidebase/nuxt-session'],
   runtimeConfig: {
     mysqlDatabase: process.env.NUXT_MYSQL_DATABASE ?? process.env.MYSQL_DATABASE ?? 'nuxt_tp2',
     mysqlHost: process.env.NUXT_MYSQL_HOST ?? process.env.MYSQL_HOST ?? '127.0.0.1',
     mysqlPassword: process.env.NUXT_MYSQL_PASSWORD ?? process.env.MYSQL_PASSWORD ?? '',
     mysqlPort: process.env.NUXT_MYSQL_PORT ?? process.env.MYSQL_PORT ?? '3306',
     mysqlUser: process.env.NUXT_MYSQL_USER ?? process.env.MYSQL_USER ?? 'root'
+  },
+  session: {
+    api: {
+      methods: ['get']
+    },
+    session: {
+      cookieSecure: process.env.NODE_ENV === 'production',
+      expiryInSeconds: 60 * 60 * 24
+    }
   },
   app: {
     head: {

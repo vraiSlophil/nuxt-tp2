@@ -150,7 +150,7 @@ const errorMessage = computed(() => {
   return beersStore.getError(beerType.value)
 })
 
-useErrorToast(errorMessage, { title: 'Chargement des bieres client' })
+useErrorToast(errorMessage, { title: 'Chargement des bières client' })
 </script>
 
 <template>
@@ -160,7 +160,7 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres client' })
         <li>
           <NuxtLink to="/">Accueil</NuxtLink>
         </li>
-        <li>Bieres client</li>
+        <li>Bières client</li>
       </ul>
     </div>
 
@@ -180,7 +180,7 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres client' })
             <option value="stouts">Stouts</option>
           </select>
 
-          <input v-model="searchInput" type="search" placeholder="Rechercher une biere"
+          <input v-model="searchInput" type="search" placeholder="Rechercher une bière"
             class="input input-bordered input-sm">
 
           <input v-model="priceInput" type="text" inputmode="decimal" placeholder="Prix max ($)"
@@ -191,7 +191,7 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres client' })
         </form>
 
         <p class="mt-2 text-sm text-base-content/70">
-          {{ pagination.total }} resultats - page {{ pagination.page }} / {{ pagination.totalPages }}
+          {{ pagination.total }} résultats - page {{ pagination.page }} / {{ pagination.totalPages }}
         </p>
       </div>
     </div>
@@ -201,11 +201,11 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres client' })
     </div>
 
     <BeerGrid :beers="pagination.items" :type="beerType" details-base-path="/bieres-client" :loading="pending"
-      empty-message="Aucune biere ne correspond au filtre client." />
+      empty-message="Aucune bière ne correspond au filtre client." />
 
     <div class="join">
       <button class="join-item btn" :disabled="pagination.page <= 1" @click="goToPage(pagination.page - 1)">
-        Precedent
+        Précédent
       </button>
       <button class="join-item btn" :disabled="pagination.page >= pagination.totalPages"
         @click="goToPage(pagination.page + 1)">

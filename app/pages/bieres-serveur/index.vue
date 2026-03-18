@@ -164,13 +164,13 @@ const serverPage = computed(() => {
 
 const errorMessage = computed(() => {
   if (error.value) {
-    return 'Impossible de charger les bieres cote serveur.'
+    return 'Impossible de charger les bières côté serveur.'
   }
 
   return ''
 })
 
-useErrorToast(errorMessage, { title: 'Chargement des bieres serveur' })
+useErrorToast(errorMessage, { title: 'Chargement des bières serveur' })
 </script>
 
 <template>
@@ -180,7 +180,7 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres serveur' })
         <li>
           <NuxtLink to="/">Accueil</NuxtLink>
         </li>
-        <li>Bieres serveur</li>
+        <li>Bières serveur</li>
       </ul>
     </div>
 
@@ -200,7 +200,7 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres serveur' })
             <option value="stouts">Stouts</option>
           </select>
 
-          <input v-model="searchInput" type="search" placeholder="Rechercher une biere"
+          <input v-model="searchInput" type="search" placeholder="Rechercher une bière"
             class="input input-bordered input-sm">
 
           <input v-model="priceInput" type="text" inputmode="decimal" placeholder="Prix max ($)"
@@ -211,7 +211,7 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres serveur' })
         </form>
 
         <p class="mt-2 text-sm text-base-content/70">
-          {{ total }} resultats - page {{ serverPage }} / {{ totalPages }}
+          {{ total }} résultats - page {{ serverPage }} / {{ totalPages }}
         </p>
       </div>
     </div>
@@ -221,11 +221,11 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres serveur' })
     </div>
 
     <BeerGrid :beers="items" :type="beerType" details-base-path="/bieres-serveur" :loading="pending"
-      empty-message="Aucune biere ne correspond au filtre serveur." />
+      empty-message="Aucune bière ne correspond au filtre serveur." />
 
     <div class="join">
       <button class="join-item btn" :disabled="serverPage <= 1" @click="goToPage(serverPage - 1)">
-        Precedent
+        Précédent
       </button>
       <button class="join-item btn" :disabled="serverPage >= totalPages" @click="goToPage(serverPage + 1)">
         Suivant

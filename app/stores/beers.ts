@@ -107,7 +107,7 @@ export const useBeersStore = defineStore('beers', () => {
 
       return collection.items
     } catch {
-      collection.error = 'Impossible de charger les bieres.'
+      collection.error = 'Impossible de charger les bières.'
 
       if (!collection.loaded) {
         collection.items = []

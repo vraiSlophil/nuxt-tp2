@@ -1,11 +1,28 @@
 <script setup lang="ts">
-const links = [
-  { to: '/', label: 'Accueil', icon: 'home' },
-  { to: '/bieres', label: 'Bieres', icon: 'local_bar' },
-  { to: '/bieres-client', label: 'Client', icon: 'computer' },
-  { to: '/bieres-serveur', label: 'Serveur', icon: 'dns' },
-  { to: '/favoris', label: 'Favoris', icon: 'favorite' }
-]
+const authStore = useAuthStore()
+const { user: currentUser } = storeToRefs(authStore)
+const { refresh, session } = await useSession()
+
+await refresh()
+authStore.syncFromSession(session.value?.user)
+
+const links = computed(() => {
+  const navigationLinks = [
+    { to: '/', label: 'Accueil', icon: 'home' },
+    { to: '/bieres', label: 'Bières', icon: 'local_bar' },
+    { to: '/bieres-client', label: 'Client', icon: 'computer' },
+    { to: '/bieres-serveur', label: 'Serveur', icon: 'dns' },
+    { to: '/favoris', label: 'Favoris', icon: 'favorite' }
+  ]
+
+  if (currentUser.value) {
+    navigationLinks.push({ to: '/profil', label: 'Profil', icon: 'account_circle' })
+  } else {
+    navigationLinks.push({ to: '/login', label: 'Connexion', icon: 'login' })
+  }
+
+  return navigationLinks
+})
 </script>
 
 <template>
@@ -24,7 +41,16 @@ const links = [
           </div>
 
           <div class="flex-1">
-            <NuxtLink to="/" class="text-xl pl-4 font-bold">TD4 Bieres</NuxtLink>
+            <NuxtLink to="/" class="pl-4 text-xl font-bold">TD5 Bières</NuxtLink>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <NuxtLink :to="currentUser ? '/profil' : '/login'" class="btn btn-sm btn-primary">
+              <span class="material-symbols-rounded text-[18px]">
+                {{ currentUser ? 'account_circle' : 'login' }}
+              </span>
+              {{ currentUser ? 'Profil' : 'Connexion' }}
+            </NuxtLink>
           </div>
         </header>
 
@@ -37,7 +63,7 @@ const links = [
         <label for="main-drawer" class="drawer-overlay" aria-label="Fermer le menu" />
 
         <aside class="min-h-full w-72 border-r border-base-300 bg-base-100 p-4">
-          <h2 class="mb-3 text-lg font-semibold">Pages TD4</h2>
+          <h2 class="mb-3 text-lg font-semibold">Pages TD5</h2>
 
           <ul class="menu w-full gap-1 bg-base-100 p-0">
             <li v-for="link in links" :key="link.to">

@@ -12,7 +12,7 @@ interface BeerGridProps {
 
 const props = withDefaults(defineProps<BeerGridProps>(), {
   loading: false,
-  emptyMessage: 'Aucune biere a afficher.'
+  emptyMessage: 'Aucune bière à afficher.'
 })
 
 const favoritesStore = useFavoritesStore()
@@ -65,7 +65,7 @@ onMounted(async () => {
       <span>{{ emptyMessage }}</span>
     </div>
 
-    <ul v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Liste des bieres">
+    <ul v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Liste des bières">
       <li v-for="beer in beers" :key="`${type}-${beer.id}`"
         class="card overflow-hidden border-2 border-base-300 bg-base-100">
         <figure class="relative h-52 w-full bg-base-200">
@@ -73,7 +73,7 @@ onMounted(async () => {
             class="h-full w-full p-4 object-contain" loading="lazy">
           <div v-else class="flex h-full w-full items-center justify-center text-sm">Image non disponible</div>
 
-          <span class="badge badge-secondary absolute bottom-2 left-2">{{ type }}</span>
+          <span class="badge absolute bottom-2 left-2">{{ type }}</span>
 
           <button type="button"
             class="btn btn-circle btn-sm absolute right-2 top-2 flex justify-center align-center border-black/50 text-black/50 hover:text-black"
@@ -98,7 +98,7 @@ onMounted(async () => {
 
           <NuxtLink :to="detailsTo(beer.id)" class="btn btn-outline btn-sm mt-2 w-full gap-1">
             <span class="material-symbols-rounded text-[18px] ">open_in_new</span>
-            Voir details
+            Voir détails
           </NuxtLink>
         </div>
       </li>

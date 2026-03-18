@@ -24,7 +24,7 @@ const fetchBeersByType = async (type: BeerType): Promise<Beer[]> => {
   } catch (error) {
     throw createError({
       statusCode: 502,
-      statusMessage: 'Impossible de recuperer les bieres distantes',
+      statusMessage: 'Impossible de récupérer les bières distantes',
       data: error
     })
   }

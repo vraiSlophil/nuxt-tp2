@@ -92,6 +92,13 @@ export const useFavoritesStore = defineStore('favorites', () => {
     })
   }
 
+  const resetState = (): void => {
+    errorMessage.value = ''
+    favorites.value = []
+    loaded.value = false
+    pending.value = false
+  }
+
   const toggleFavorite = async (beer: Beer, type: BeerType): Promise<void> => {
     errorMessage.value = ''
 
@@ -113,7 +120,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
       setFavorite(response.favorite)
       loaded.value = true
     } catch {
-      reportError('Impossible de mettre a jour les favoris.')
+      reportError('Impossible de mettre à jour les favoris.')
     }
   }
 
@@ -128,7 +135,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
 
       removeFavoriteFromState(id, type)
     } catch {
-      reportError('Impossible de mettre a jour les favoris.')
+      reportError('Impossible de mettre à jour les favoris.')
     }
   }
 
@@ -140,6 +147,7 @@ export const useFavoritesStore = defineStore('favorites', () => {
     ensureLoaded,
     refreshFavorites,
     isFavorite,
+    resetState,
     toggleFavorite,
     removeFavorite
   }

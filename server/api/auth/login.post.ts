@@ -1,5 +1,6 @@
 import { createError, readBody } from 'h3'
-import { parseFavoriteBeerPayload, saveFavoriteBeer } from '#server/utils/favorites'
+import { setSessionUser } from '#server/utils/session'
+import { authenticateUser, parseAuthCredentials } from '#server/utils/users'
 
 const isHandledError = (error: unknown): error is { statusCode: number } => {
   return Boolean(error && typeof error === 'object' && 'statusCode' in error)
@@ -8,12 +9,14 @@ const isHandledError = (error: unknown): error is { statusCode: number } => {
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const payload = parseFavoriteBeerPayload(body)
-    const favorite = await saveFavoriteBeer(event, payload)
+    const credentials = parseAuthCredentials(body)
+    const user = await authenticateUser(event, credentials)
+
+    setSessionUser(event, user)
 
     return {
-      favorite,
-      ok: true
+      ok: true,
+      user
     }
   } catch (error) {
     if (isHandledError(error)) {
@@ -22,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Impossible d’enregistrer ce favori',
+      statusMessage: 'Impossible de connecter cet utilisateur',
       data: error
     })
   }

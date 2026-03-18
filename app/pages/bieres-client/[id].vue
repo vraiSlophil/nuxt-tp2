@@ -67,13 +67,13 @@ const errorMessage = computed(() => {
   }
 
   if (!pending.value && beersStore.hasLoaded(beerType.value) && !beer.value) {
-    return 'Biere introuvable.'
+    return 'Bière introuvable.'
   }
 
   return ''
 })
 
-useErrorToast(errorMessage, { title: 'Detail biere client' })
+useErrorToast(errorMessage, { title: 'Détail bière client' })
 
 const isCurrentFavorite = computed(() => {
   if (!beer.value) {
@@ -108,7 +108,7 @@ const formatRating = (value: unknown): string | null => {
           <NuxtLink to="/">Accueil</NuxtLink>
         </li>
         <li>
-          <NuxtLink :to="`/bieres-client?type=${beerType}`">Bieres client</NuxtLink>
+          <NuxtLink :to="`/bieres-client?type=${beerType}`">Bières client</NuxtLink>
         </li>
         <li>#{{ route.params.id }}</li>
       </ul>
@@ -151,7 +151,7 @@ const formatRating = (value: unknown): string | null => {
         <div class="flex flex-wrap gap-2 text-sm">
           <span class="badge badge-outline">ID: {{ beer.id }}</span>
           <span class="badge badge-outline">{{ formatBeerPrice(beer.price) }}</span>
-          <span class="badge badge-secondary">{{ beerType }}</span>
+          <span class="badge">{{ beerType }}</span>
           <span v-if="formatRating(beer.rating?.average)" class="badge badge-accent">
             Note: {{ formatRating(beer.rating?.average) }}/5
           </span>
@@ -159,7 +159,7 @@ const formatRating = (value: unknown): string | null => {
 
         <NuxtLink :to="`/bieres-client?type=${beerType}`" class="btn btn-outline gap-1">
           <span class="material-symbols-rounded text-[18px] ">arrow_back</span>
-          Retour a la liste client
+          Retour à la liste client
         </NuxtLink>
       </div>
     </article>

@@ -55,7 +55,7 @@ const errorMessage = computed(() => {
   return beersStore.getError(beerType.value)
 })
 
-useErrorToast(errorMessage, { title: 'Chargement des bieres' })
+useErrorToast(errorMessage, { title: 'Chargement des bières' })
 </script>
 
 <template>
@@ -65,7 +65,7 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres' })
         <li>
           <NuxtLink to="/">Accueil</NuxtLink>
         </li>
-        <li>Bieres</li>
+        <li>Bières</li>
       </ul>
     </div>
 
@@ -79,11 +79,11 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres' })
       <div class="card-body space-y-4">
         <h1 class="card-title text-2xl">/bieres</h1>
         <p class="text-sm text-base-content/80">
-          Choisis un type et affiche les 6 premieres bieres. Cette page sert de point d'entree.
+          Choisis un type et affiche les 6 premières bières. Cette page sert de point d'entrée.
         </p>
 
         <fieldset class="fieldset w-full max-w-xs">
-          <legend class="fieldset-legend">Type de biere</legend>
+          <legend class="fieldset-legend">Type de bière</legend>
           <select class="select select-bordered" :value="beerType" @change="onTypeChange">
             <option value="ale">IPA / Ale</option>
             <option value="stouts">Stouts</option>
@@ -97,6 +97,6 @@ useErrorToast(errorMessage, { title: 'Chargement des bieres' })
     </div>
 
     <BeerGrid :beers="beers" :type="beerType" details-base-path="/bieres-client" :loading="isLoading"
-      empty-message="Aucune biere de preview pour ce type." />
+      empty-message="Aucune bière de preview pour ce type." />
   </section>
 </template>

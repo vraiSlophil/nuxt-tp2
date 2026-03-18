@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Impossible de recuperer les favoris',
+      statusMessage: 'Impossible de récupérer les favoris',
       data: error
     })
   }
